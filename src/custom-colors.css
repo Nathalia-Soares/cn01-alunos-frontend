@@ -1,0 +1,120 @@
+/* Classes utilitárias para a paleta de cores customizada */
+
+/* Cores de texto */
+.text-primary-custom {
+  color: #042D59 !important;
+}
+
+.text-secondary-custom {
+  color: #00587C !important;
+}
+
+.text-accent-custom {
+  color: #018A93 !important;
+}
+
+.text-light-custom {
+  color: #E7E7DD !important;
+}
+
+/* Cores de fundo */
+.bg-primary-custom {
+  background-color: #042D59 !important;
+}
+
+.bg-secondary-custom {
+  background-color: #00587C !important;
+}
+
+.bg-accent-custom {
+  background-color: #018A93 !important;
+}
+
+.bg-light-custom {
+  background-color: #E7E7DD !important;
+}
+
+/* Gradientes */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #042D59 0%, #00587C 100%) !important;
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, #00587C 0%, #018A93 100%) !important;
+}
+
+.bg-gradient-light {
+  background: linear-gradient(135deg, #E7E7DD 0%, rgba(231, 231, 221, 0.8) 100%) !important;
+}
+
+/* Bordas */
+.border-primary-custom {
+  border-color: #042D59 !important;
+}
+
+.border-secondary-custom {
+  border-color: #00587C !important;
+}
+
+.border-accent-custom {
+  border-color: #018A93 !important;
+}
+
+/* Botões personalizados */
+.btn-custom-primary {
+  background-color: #042D59;
+  border-color: #042D59;
+  color: #E7E7DD;
+}
+
+.btn-custom-primary:hover,
+.btn-custom-primary:focus,
+.btn-custom-primary:active {
+  background-color: #00587C;
+  border-color: #00587C;
+  color: #E7E7DD;
+}
+
+.btn-custom-secondary {
+  background-color: #018A93;
+  border-color: #018A93;
+  color: #E7E7DD;
+}
+
+.btn-custom-secondary:hover,
+.btn-custom-secondary:focus,
+.btn-custom-secondary:active {
+  background-color: #00587C;
+  border-color: #00587C;
+  color: #E7E7DD;
+}
+
+/* Cards especiais */
+.card-custom {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(4, 45, 89, 0.2);
+  box-shadow: 0 4px 6px rgba(4, 45, 89, 0.1);
+}
+
+.card-custom-dark {
+  background-color: #042D59;
+  border-color: #00587C;
+  color: #E7E7DD;
+}
+
+/* Animações suaves */
+.smooth-transition {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover effects */
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(4, 45, 89, 0.15);
+}
+
+/* Focus states customizados */
+.focus-custom:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(1, 138, 147, 0.25);
+}
