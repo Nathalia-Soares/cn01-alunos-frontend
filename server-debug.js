@@ -3,10 +3,12 @@ const path = require('path');
 const axios = require('axios');
 const app = express();
 
+console.log('Iniciando servidor...');
+
 // Middleware para parsing JSON
 app.use(express.json());
 
-// Configurar CORS para permitir requisições do frontend
+// Configurar CORS
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -18,70 +20,72 @@ app.use((req, res, next) => {
   }
 });
 
+// Test endpoint
+app.get('/test', (req, res) => {
+  res.json({ message: 'Server is working!' });
+});
+
 // Proxy manual para a API
 const API_BASE_URL = 'https://alunos-api.lemonmoss-6686543d.brazilsouth.azurecontainerapps.io/v1/api';
 
 app.all('/v1/api/*', async (req, res) => {
   try {
-    // Preserve full path + query string when forwarding
-    const upstreamPath = req.originalUrl.replace(/^\/v1\/api/, '');
-    const targetUrl = `${API_BASE_URL}${upstreamPath}`;
+    console.log(`📤 Proxy: ${req.method} ${req.path}`);
     
-    console.log(`📤 Proxy: ${req.method} ${req.originalUrl} -> ${targetUrl}`);
+    const apiPath = req.path.replace('/v1/api', '');
+    const targetUrl = `${API_BASE_URL}${apiPath}`;
     
-    const config = {
+    console.log(`🎯 Target URL: ${targetUrl}`);
+    
+    const response = await axios({
       method: req.method.toLowerCase(),
       url: targetUrl,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      timeout: 30000,
-      validateStatus: () => true
-    };
+      data: req.body,
+      timeout: 30000
+    });
     
-    if (req.body && Object.keys(req.body).length > 0) {
-      config.data = req.body;
-    }
-    
-    const response = await axios(config);
-    
-    console.log(`📥 Proxy Response: ${response.status} ${targetUrl}`);
-    if (response.status === 204 || response.data === undefined) {
-      return res.sendStatus(response.status || 204);
-    }
+    console.log(`✅ Proxy Success: ${response.status}`);
     res.status(response.status).json(response.data);
     
   } catch (error) {
-    console.error('❌ Proxy Error:', {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-      url: error.config?.url
-    });
+    console.error('❌ Proxy Error:', error.message);
     
     if (error.response) {
+      console.error(`Status: ${error.response.status}`);
+      console.error(`Data:`, error.response.data);
       res.status(error.response.status).json(error.response.data || { error: error.message });
     } else {
+      console.error('Network Error:', error.message);
       res.status(500).json({ error: 'Erro no proxy: ' + error.message });
     }
   }
 });
 
-// Servir arquivos estáticos da pasta build
+// Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'build')));
 
-// Para todas as rotas que não são arquivos estáticos, retornar index.html
-// Isso permite que o React Router funcione corretamente
+// SPA routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-// Usar a porta fornecida pelo Azure ou 8080 como fallback
-const port = process.env.PORT || 8080;
+// Error handling
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
 
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+});
+
+// Start server
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`🚀 Servidor rodando na porta ${port}`);
   console.log(`📂 Servindo arquivos de: ${path.join(__dirname, 'build')}`);
-  console.log(`🔄 Proxy configurado para: https://alunos-api.lemonmoss-6686543d.brazilsouth.azurecontainerapps.io`);
+  console.log(`🔄 Proxy configurado para: ${API_BASE_URL}`);
 });
