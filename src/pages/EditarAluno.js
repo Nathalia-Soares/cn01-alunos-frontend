@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FormularioAluno from '../components/FormularioAluno';
 import { alunosService } from '../services/alunosService';
@@ -12,11 +12,7 @@ const EditarAluno = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    carregarAluno();
-  }, [id]);
-
-  const carregarAluno = async () => {
+  const carregarAluno = useCallback(async () => {
     try {
       setIsLoadingData(true);
       setError(null);
@@ -27,7 +23,11 @@ const EditarAluno = () => {
     } finally {
       setIsLoadingData(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    carregarAluno();
+  }, [carregarAluno]);
 
   const handleSubmit = async (formData) => {
     try {

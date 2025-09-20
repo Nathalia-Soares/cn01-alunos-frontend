@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { alunosService } from '../services/alunosService';
 import { CURSOS, TURMAS } from '../constants/formOptions';
@@ -10,11 +10,7 @@ const DetalhesAluno = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    carregarAluno();
-  }, [id]);
-
-  const carregarAluno = async () => {
+  const carregarAluno = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -25,7 +21,11 @@ const DetalhesAluno = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    carregarAluno();
+  }, [carregarAluno]);
 
   const excluirAluno = async () => {
     if (window.confirm(`Tem certeza que deseja excluir o aluno ${aluno.nome}?`)) {
