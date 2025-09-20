@@ -1,12 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = '/v1/api';  // URL relativa para funcionar com proxy
+// Em produção usar URL completa, em desenvolvimento usar proxy
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? process.env.REACT_APP_API_URL || 'https://alunos-backend-e4ewatadadfjbphw.brazilsouth-01.azurewebsites.net/v1/api'
+  : '/v1/api';
 const API_TIMEOUT = parseInt(process.env.REACT_APP_API_TIMEOUT) || 30000;
 
 console.log('🔧 API Configuration:');
 console.log('📡 Base URL:', API_BASE_URL);
 console.log('⏱️ Timeout:', API_TIMEOUT + 'ms');
-console.log('🌍 Environment:', process.env.REACT_APP_ENVIRONMENT || 'development');
+console.log('🌍 Environment:', process.env.REACT_APP_ENVIRONMENT || process.env.NODE_ENV || 'development');
 
 // Configuração do axios
 const api = axios.create({
